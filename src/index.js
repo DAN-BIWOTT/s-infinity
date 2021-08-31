@@ -10,12 +10,16 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import reportWebVitals from './reportWebVitals';
 
+// 
+import { Provider } from 'react-redux';
+import { store } from './states/store';
 // ----------------------------------------------------------------------
-
 ReactDOM.render(
   <HelmetProvider>
     <BrowserRouter>
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </BrowserRouter>
   </HelmetProvider>,
   document.getElementById('root')

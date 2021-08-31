@@ -16,7 +16,13 @@ import {
   FormControlLabel
 } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
-
+// firebase
+import { auth,db,signInWithEmailAndPassword } from '../../../firebase.js';
+// redux
+import { useSelector,useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from '../../../states/index';
+import { collection, doc, getDocs, query, where } from 'firebase/firestore';
 // ----------------------------------------------------------------------
 
 export default function LoginForm() {
@@ -27,6 +33,17 @@ export default function LoginForm() {
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required')
   });
+  // Redux data
+    const dispatch = useDispatch();
+    const  {signinUser}  = bindActionCreators(actionCreators,dispatch);
+    // console.log(signinUser);
+    
+  var user = {uid:"",
+  firstName:"",
+  lastName:"",
+  email:"",
+  time:""
+};
 
   const formik = useFormik({
     initialValues: {
@@ -36,7 +53,36 @@ export default function LoginForm() {
     },
     validationSchema: LoginSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+      // console.log(formik.values);
+      signInWithEmailAndPassword(auth,
+        formik.values.email, formik.values.password
+        ).then(auth.onAuthStateChanged(userAuth => {
+          var profile = {
+            lastName: "",
+            firstName: "",
+            u_id: ""
+        }
+          const q = query(collection(db,'Users'),where("u_id","==",`${userAuth.uid}`));
+          getDocs(q).then(querySnapshot => {
+          querySnapshot.forEach(doc => {
+                                profile = doc.data();
+                            });
+          user.uid = userAuth.uid;
+          user.email = userAuth.email;
+          user.time = Date.now();
+          user.firstName = profile.firstName;
+          user.lastName = profile.lastName;
+          if(userAuth){
+            signinUser(user);
+            localStorage.setItem("logged_in",JSON.stringify(user));
+            navigate('/dashboard/app', { replace: true });
+          }
+                        }
+                );
+         
+        })).catch(err => {
+        console.log(err)
+        })
     }
   });
 

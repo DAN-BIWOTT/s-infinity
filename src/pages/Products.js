@@ -15,7 +15,7 @@ import PRODUCTS from '../_mocks_/products';
 
 // ----------------------------------------------------------------------
 
-export default function EcommerceShop() {
+export default function UserProfile() {
   const [openFilter, setOpenFilter] = useState(false);
 
   const formik = useFormik({
@@ -50,7 +50,7 @@ export default function EcommerceShop() {
     <Page title="Dashboard: Products | Minimal-UI">
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Products
+          User Profile
         </Typography>
 
         <Stack
@@ -60,20 +60,8 @@ export default function EcommerceShop() {
           justifyContent="flex-end"
           sx={{ mb: 5 }}
         >
-          <Stack direction="row" spacing={1} flexShrink={0} sx={{ my: 1 }}>
-            <ProductFilterSidebar
-              formik={formik}
-              isOpenFilter={openFilter}
-              onResetFilter={handleResetFilter}
-              onOpenFilter={handleOpenFilter}
-              onCloseFilter={handleCloseFilter}
-            />
-            <ProductSort />
-          </Stack>
         </Stack>
 
-        <ProductList products={PRODUCTS} />
-        <ProductCartWidget />
       </Container>
     </Page>
   );

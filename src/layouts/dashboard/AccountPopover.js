@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import homeFill from '@iconify/icons-eva/home-fill';
 import personFill from '@iconify/icons-eva/person-fill';
 import settings2Fill from '@iconify/icons-eva/settings-2-fill';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 // material
 import { alpha } from '@material-ui/core/styles';
 import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '@material-ui/core';
@@ -11,6 +11,9 @@ import { Button, Box, Divider, MenuItem, Typography, Avatar, IconButton } from '
 import MenuPopover from '../../components/MenuPopover';
 //
 import account from '../../_mocks_/account';
+import { useSelector,useDispatch } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actionCreators } from 'src/states';
 
 // ----------------------------------------------------------------------
 
@@ -23,7 +26,7 @@ const MENU_OPTIONS = [
   {
     label: 'Profile',
     icon: personFill,
-    linkTo: '#'
+    linkTo: '/dashboard/user',
   },
   {
     label: 'Settings',
@@ -44,6 +47,19 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(false);
   };
+  // Navigate back to login
+  const navigate = useNavigate();
+  // remove user data from redux
+  const dispatch = useDispatch();
+  const { signoutUser } = bindActionCreators(actionCreators,dispatch);
+  console.log(signoutUser);
+  const logoutUser = (e) => {
+    e.preventDefault();
+    signoutUser();
+    navigate('/Login', { replace: true });
+  }
+  // redux get user info
+  const userData = useSelector((state)=>state.userData);
 
   return (
     <>
@@ -78,10 +94,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle1" noWrap>
-            {account.displayName}
+            {userData.firstName} {userData.lastName}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {userData.email}
           </Typography>
         </Box>
 
@@ -110,7 +126,7 @@ export default function AccountPopover() {
         ))}
 
         <Box sx={{ p: 2, pt: 1.5 }}>
-          <Button fullWidth color="inherit" variant="outlined">
+          <Button fullWidth onClick={logoutUser} color="inherit" variant="outlined">
             Logout
           </Button>
         </Box>

@@ -8,7 +8,10 @@ import { useNavigate } from 'react-router-dom';
 // material
 import { Stack, TextField, IconButton, InputAdornment } from '@material-ui/core';
 import { LoadingButton } from '@material-ui/lab';
-
+// firebase
+import { auth,db,createUserWithEmailAndPassword } from '../../../firebase.js';
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { onAuthStateChanged,updateProfile } from 'firebase/auth';
 // ----------------------------------------------------------------------
 
 export default function RegisterForm() {
@@ -24,7 +27,13 @@ export default function RegisterForm() {
     email: Yup.string().email('Email must be a valid email address').required('Email is required'),
     password: Yup.string().required('Password is required')
   });
-
+  var user = {uid:"",
+  firstName:"",
+  lastName:"",
+  email:"",
+  uid:"",
+  time:""
+};
   const formik = useFormik({
     initialValues: {
       firstName: '',
@@ -34,7 +43,30 @@ export default function RegisterForm() {
     },
     validationSchema: RegisterSchema,
     onSubmit: () => {
-      navigate('/dashboard', { replace: true });
+        createUserWithEmailAndPassword(auth,  
+          formik.values.email, formik.values.password
+            ).then(onAuthStateChanged(auth,(userAuth) => {
+                if(userAuth){
+                  console.log(userAuth.uid);
+                  user.uid = userAuth.uid;
+                  user.email = userAuth.email;
+                  user.time = Date.now();
+                  try{
+                     setDoc(doc(db,"Users","Profile"),{
+                      firstName: formik.values.firstName,
+                      lastName: formik.values.lastName,
+                      u_id: userAuth.uid
+                    });
+                  localStorage.setItem("logged_in",JSON.stringify(user));
+                  navigate('/dashboard', { replace: true });
+                } catch (e) {
+                  alert(e);
+                  console.error("Error adding document: ", e);
+                }
+                }
+              })).catch(err => {
+            console.log(err)
+            })
     }
   });
 

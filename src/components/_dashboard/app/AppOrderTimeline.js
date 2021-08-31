@@ -17,28 +17,28 @@ import { fDateTime } from '../../../utils/formatTime';
 
 const TIMELINES = [
   {
-    title: '1983, orders, $4220',
-    time: faker.date.past(),
+    title: 'Consult. Lets talk about courses you are most likely to be enrolled in',
+    moreInfo:'Text me on whats app, depending on what you got on your KCSE, i\'ll suggest courses you should register for. You can also change the course once admitted and settled in Canada',
     type: 'order1'
   },
   {
-    title: '12 Invoices have been paid',
-    time: faker.date.past(),
+    title: 'Fill the form. This will enable me to know how I shall fill the application forms.',
+    moreInfo:'I shall read through the form and structure a university application for you.',
     type: 'order2'
   },
   {
-    title: 'Order #37745 from September',
-    time: faker.date.past(),
+    title: 'Submit the form and pay the application fee + half of my fee.(25$)',
+    moreInfo:'The application fee is stipulated by the University you choose. I shall send a screenshot of the university application fee policy and the Receipt to your inbox.',
     type: 'order3'
   },
   {
-    title: 'New order placed #XF-2356',
-    time: faker.date.past(),
+    title: 'Wait for feedback.',
+    moreInfo:'Different universities have different times to process the applications. I\'ll send weekly updates until a feedback is given.',
     type: 'order4'
   },
   {
-    title: 'New order placed #XF-2346',
-    time: faker.date.past(),
+    title: 'Celebrate.',
+    moreInfo:'Once your letter of acceptance is sent, you shall pay the fee balance and I\'ll send you your log in credentials plus a check list of how to prepare for your arrival to Canada.',
     type: 'order5'
   }
 ];
@@ -51,7 +51,7 @@ OrderItem.propTypes = {
 };
 
 function OrderItem({ item, isLast }) {
-  const { type, title, time } = item;
+  const { type, title, moreInfo } = item;
   return (
     <TimelineItem>
       <TimelineSeparator>
@@ -70,7 +70,7 @@ function OrderItem({ item, isLast }) {
       <TimelineContent>
         <Typography variant="subtitle2">{title}</Typography>
         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-          {fDateTime(time)}
+          {moreInfo}
         </Typography>
       </TimelineContent>
     </TimelineItem>
@@ -86,7 +86,7 @@ export default function AppOrderTimeline() {
         }
       }}
     >
-      <CardHeader title="Order Timeline" />
+      <CardHeader title="How To Start" />
       <CardContent>
         <Timeline>
           {TIMELINES.map((item, index) => (
